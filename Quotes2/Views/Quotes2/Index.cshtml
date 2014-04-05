@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Quotes2.Models.Quotation>
+@using GridMvc.Html;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<p>
+    @using (Html.BeginForm())
+    {
+        @Html.TextBox("Search")
+        <input type="submit" value="Search" class="btn btn-default" name="doNotAddID" />
+    }
+
+    @using (Html.BeginForm())
+    {
+        if(ViewBag.ClearSearch)
+        {
+            <input type="submit" value="Clear Search" class="btn btn-default" name="doNotAddID" />
+        }
+    }
+
+    @using (Html.BeginForm())
+    {
+        if (ViewBag.Cookie)
+        {
+            <input type="submit" value="Unhide All" class="btn btn-default" name="delete" />
+        }
+    }
+</p>
+
+@Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(model => model.Quote).Titled("Quote").SetWidth(200);
+    columns.Add(model => model.Author).Titled("Author")
+        .SetWidth(5)
+        .Sortable(true);
+    columns.Add(model => model.Date.Date).Titled("Date")
+        .SetWidth(5)
+        .Format("{0:MM/dd/yyyy}")
+        .Sortable(true);
+    columns.Add(model => model.Category.Name).Titled("Category")
+        .SetWidth(5)
+        .Sortable(true);
+    columns.Add().SetWidth(5)
+        .RenderValueAs(model => @Html.ActionLink("Hide", "Index", new { id = model.QuotationID }));
+    @*columns.Add().SetWidth(5)
+        .RenderValueAs(model => @Html.ActionLink("Edit", "Edit", new { id = model.QuotationID }));
+    columns.Add().SetWidth(5)
+        .RenderValueAs(model => @Html.ActionLink("Details", "Details", new { id = model.QuotationID }));
+    columns.Add().SetWidth(5)
+        .RenderValueAs(model => @Html.ActionLink("Delete", "Delete", new { id = model.QuotationID }));*@
+}).WithPaging(20)
