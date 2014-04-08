@@ -27,7 +27,11 @@ namespace Quotes2.Controllers
         {
             if (viewMine == "View My Quotes")
             {
-                return View(manager);
+                //var quotations = db.Quotations.Include(q => q.Category).Where(q => q.User.Identity == User.Identity.GetUserId());
+                ViewBag.ClearSearch = false;
+                ViewBag.Cookie = false;
+                var quotations = db.Quotations.Include(q => q.Category);
+                return View(quotations.ToList());
             }
             else
             {
