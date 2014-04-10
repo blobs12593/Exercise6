@@ -25,18 +25,19 @@ namespace Quotes2.Controllers
         // GET: /Quotes2/
         public ActionResult Index(string Search, int? id, string delete, string doNotAddID, string viewMine)
         {
+            ViewBag.Cookie = false;
             if (viewMine == "View My Quotes")
             {
                 //var quotations = db.Quotations.Include(q => q.Category).Where(q => q.User.Identity == User.Identity.GetUserId());
                 ViewBag.ClearSearch = false;
-                ViewBag.Cookie = false;
-                var quotations = db.Quotations.Include(q => q.Category);
+
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                var quotations = currentUser.UserQuotes.AsQueryable();
                 return View(quotations.ToList());
             }
             else
             {
                 HttpCookie myCookie = Request.Cookies.Get("Quote");
-                ViewBag.Cookie = false;
 
                 // Prevent accidental hiding
                 if (doNotAddID == "Search" || doNotAddID == "Clear Search")
@@ -155,9 +156,19 @@ namespace Quotes2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include="QuotationID,Quote,Author,Date,CategoryID")] Quotation quotation)
         {
+            if (quotation.Author == null || quotation.Quote == null)
+            {
+                return RedirectToAction("Create");
+            }
+            if (quotation.Author.Trim() == null || quotation.Quote.Trim() == null || quotation.CategoryID == 0)
+            {
+                return RedirectToAction("Create");
+            }
             if (ModelState.IsValid)
             {
                 quotation.Date = DateTime.Now.Date;
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                currentUser.UserQuotes.Add(quotation);
                 db.Quotations.Add(quotation);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -227,13 +238,22 @@ namespace Quotes2.Controllers
         }
 
         [HttpPost, ActionName("AddCategory")]
-        [ValidateAntiForgeryToken]
         public ActionResult AddCategory([Bind(Include = "CategoryID,Name")]String value)
         {
-            Category Ct = new Category();
-            Ct.Name = value;
-            db.Categories.Add(Ct);
-            db.SaveChanges();
+            if (value.Trim() != "")
+            {
+                Category Ct = new Category();
+                Ct.Name = value;
+                foreach (Category myCats in db.Categories)
+                {
+                    if (myCats.Name == Ct.Name)
+                    {
+                        return RedirectToAction("Create");
+                    }
+                }
+                db.Categories.Add(Ct);
+                db.SaveChanges();
+            }
             return RedirectToAction("Create");
         }
 
