@@ -40,7 +40,7 @@
         }
     }
 </p>
-@if (!User.IsInRole("Admin"))
+@if (!User.IsInRole("Admin") && ViewBag.MyQuotes == false)
 {
     @Html.Grid(Model).Columns(columns =>
     {
@@ -59,7 +59,7 @@
             .RenderValueAs(model => @Html.ActionLink("Hide", "Index", new { id = model.QuotationID }));
     }).WithPaging(20)
 }
-@if (User.IsInRole("Admin"))
+@if (User.IsInRole("Admin") || (!User.IsInRole("Admin") && ViewBag.MyQuotes == true))
 {
     @Html.Grid(Model).Columns(columns =>
     {

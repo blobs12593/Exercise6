@@ -30,6 +30,7 @@ namespace Quotes2.Controllers
             {
                 //var quotations = db.Quotations.Include(q => q.Category).Where(q => q.User.Identity == User.Identity.GetUserId());
                 ViewBag.ClearSearch = false;
+                ViewBag.MyQuotes = true;
 
                 ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
                 var quotations = currentUser.UserQuotes.AsQueryable();
@@ -38,7 +39,7 @@ namespace Quotes2.Controllers
             else
             {
                 HttpCookie myCookie = Request.Cookies.Get("Quote");
-
+                ViewBag.MyQuotes = false;
                 // Prevent accidental hiding
                 if (doNotAddID == "Search" || doNotAddID == "Clear Search")
                 {
