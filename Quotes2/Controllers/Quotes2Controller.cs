@@ -28,7 +28,6 @@ namespace Quotes2.Controllers
             ViewBag.Cookie = false;
             if (viewMine == "View My Quotes")
             {
-                //var quotations = db.Quotations.Include(q => q.Category).Where(q => q.User.Identity == User.Identity.GetUserId());
                 ViewBag.ClearSearch = false;
                 ViewBag.MyQuotes = true;
 
