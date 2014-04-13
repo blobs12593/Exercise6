@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -23,9 +21,10 @@ namespace Quotes2.Controllers
             manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
         }
         // GET: /Quotes2/
-        public ActionResult Index(string Search, int? id, string delete, string doNotAddID, string viewMine)
+        public ActionResult Index(string Search, int? id, string delete, string doNotAddID, string viewMine, string findThatUser, string FindUserQuotes)
         {
             ViewBag.Cookie = false;
+            
             if (viewMine == "View My Quotes")
             {
                 ViewBag.ClearSearch = false;
@@ -34,6 +33,23 @@ namespace Quotes2.Controllers
                 ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
                 var quotations = currentUser.UserQuotes.AsQueryable();
                 return View(quotations.ToList());
+            }
+            else if (User.IsInRole("Admin") && findThatUser == "Find User Quotes")
+            {
+                ViewBag.ClearSearch = false;
+                ViewBag.MyQuotes = false;
+
+                try
+                {
+                    var quotations = manager.FindByName(FindUserQuotes).UserQuotes.AsQueryable();
+                    return View(quotations.ToList());
+                }
+                catch(Exception)
+                {
+                    //If error return an empty list
+                    var quotations = db.Quotations.Include(q => q.Category).Where(q => q.Category.Name.Equals(q.Category.Name + "nomatch"));
+                    return View(quotations.ToList());
+                }
             }
             else
             {

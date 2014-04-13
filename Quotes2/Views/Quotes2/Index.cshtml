@@ -18,6 +18,14 @@
     }
 </p>
 <p>
+    @if (User.IsInRole("Admin"))
+    {
+        using (Html.BeginForm())
+        {
+            @Html.TextBox("FindUserQuotes")
+            <input type="submit" value="Find User Quotes" class="btn btn-default" name="findThatUser" />
+        }
+    }
     @using (Html.BeginForm())
     {
         @Html.TextBox("Search")

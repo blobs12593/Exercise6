@@ -8,14 +8,7 @@ namespace Quotes2.Controllers
     public class HomeController : Controller
     {
         private Quotes2Context db = new Quotes2Context();
-        //private UserManager<ApplicationUser> manager;
-        //private UserStore<ApplicationUser> manager2;
 
-        //public HomeController()
-        //{
-            //manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
-            //manager2 = new UserStore<ApplicationUser>(db);
-        //}
         public ActionResult Index()
         {
             return View();
@@ -63,7 +56,6 @@ namespace Quotes2.Controllers
 
         public ActionResult Nuke()
         {
-            //ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
             var myContext = new ApplicationDbContext();
             var users = myContext.Users.ToList();
             foreach (ApplicationUser currentUser in users)
