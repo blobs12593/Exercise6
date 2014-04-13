@@ -68,7 +68,7 @@ namespace Quotes2.Controllers
             var users = myContext.Users.ToList();
             foreach (ApplicationUser currentUser in users)
             {
-                foreach (Quotation quote in currentUser.UserQuotes.AsQueryable())
+                foreach (Quotation quote in currentUser.UserQuotes.ToList())
                 {
                     currentUser.UserQuotes.Remove(quote);
                 }
