@@ -154,6 +154,16 @@ namespace Quotes2.Controllers
             {
                 return HttpNotFound();
             }
+            //Block users from modifying other users quotes
+            if (!User.IsInRole("Admin"))
+            {
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                var quotations = currentUser.UserQuotes.AsQueryable();
+                if (!quotations.Contains(quotation))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
             return View(quotation);
         }
 
@@ -207,6 +217,16 @@ namespace Quotes2.Controllers
                 return HttpNotFound();
             }
             ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "Name", quotation.CategoryID);
+            //Block users from modifying other users quotes
+            if (!User.IsInRole("Admin"))
+            {
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                var quotations = currentUser.UserQuotes.AsQueryable();
+                if (!quotations.Contains(quotation))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
             return View(quotation);
         }
 
@@ -239,6 +259,16 @@ namespace Quotes2.Controllers
             {
                 return HttpNotFound();
             }
+            //Block users from modifying other users quotes
+            if (!User.IsInRole("Admin"))
+            {
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                var quotations = currentUser.UserQuotes.AsQueryable();
+                if (!quotations.Contains(quotation))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
             return View(quotation);
         }
 
@@ -248,6 +278,26 @@ namespace Quotes2.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Quotation quotation = db.Quotations.Find(id);
+            if (User.IsInRole("Admin"))
+            {
+                var myContext = new ApplicationDbContext();
+                var users = myContext.Users.ToList();
+                foreach (ApplicationUser currentUser in users)
+                {
+                    foreach (Quotation quote in currentUser.UserQuotes.ToList())
+                    {
+                        if (quote == quotation)
+                        {
+                            currentUser.UserQuotes.Remove(quotation);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                currentUser.UserQuotes.Remove(quotation);
+            }
             db.Quotations.Remove(quotation);
             db.SaveChanges();
             return RedirectToAction("Index");
