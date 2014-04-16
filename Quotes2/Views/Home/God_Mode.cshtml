@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "God Powers";
     ViewBag.Message = "Knowledge";
+    ViewBag.count = 0;
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
@@ -23,6 +24,26 @@
 <div>Number of Users: @ViewBag.NumberOfUsers</div>
 <div>Number of Quotes: @ViewBag.NumberOfQuotes</div>
 <div>Number of Categories: @ViewBag.NumberOfCats</div>
+<br />
+<div>Quotes Per Category:</div>
+
+@foreach (string catName in ViewBag.CatNames)
+{
+    @catName
+    @: : 
+    int innerCount = 0;
+    foreach (int catNum in ViewBag.CatReps)
+    {
+        if (innerCount == ViewBag.count)
+        {
+            @catNum
+            break;
+        }
+        innerCount += 1;
+    }
+    ViewBag.count += 1;
+    <br />
+}
 
 @using (Html.BeginForm("Nuke", "Home"))
 {

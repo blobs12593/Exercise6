@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<Quotes2.Models.Quotation>
 @using GridMvc.Html;
+@using Quotes2.Models;
 
 @{
     ViewBag.Title = "Quotes";
@@ -22,7 +23,15 @@
     {
         using (Html.BeginForm())
         {
-            @Html.TextBox("FindUserQuotes")
+            var myContext = new ApplicationDbContext();
+            var users = myContext.Users.ToList();
+            List<string> userNames = new List<string>();
+            foreach (var user in users)
+            {
+                userNames.Add(user.UserName);
+            }
+            SelectList list = new SelectList(userNames);
+            @Html.DropDownList("FindUserQuotes", list, "-- Select User --")
             <input type="submit" value="Find User Quotes" class="btn btn-default" name="findThatUser" />
         }
     }
