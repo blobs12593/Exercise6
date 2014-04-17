@@ -12,7 +12,8 @@ namespace Quotes2.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            ValuesController myController = new ValuesController();
+            return View(myController.GetQuoteOfDay());
         }
 
         public ActionResult About()

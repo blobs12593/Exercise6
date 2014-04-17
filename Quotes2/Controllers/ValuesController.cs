@@ -34,13 +34,20 @@ namespace Quotes2.Controllers
             {
                 SimpleQuotes mySimple = new SimpleQuotes();
                 mySimple.Quote = myQuote.Quote;
-                mySimple.Quote = myQuote.Author;
-                mySimple.Quote = myQuote.Category.Name;
+                mySimple.Author = myQuote.Author;
+                mySimple.Category = myQuote.Category.Name;
                 allQuotes.Add(mySimple);
             }
-            Random r = new Random();
-            int randomQuoteIndex = r.Next(0, allQuotes.Count);
-            return allQuotes[randomQuoteIndex];
+            if (allQuotes.Count != 0)
+            {
+                Random r = new Random();
+                int randomQuoteIndex = r.Next(0, allQuotes.Count);
+                return allQuotes[randomQuoteIndex];
+            }
+            else
+            {
+                return null;
+            }
         }
         // GET api/<controller>/5
         public SimpleQuotes Get(int id)
