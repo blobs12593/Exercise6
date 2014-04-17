@@ -181,6 +181,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Quotation.cs" />
     <Compile Include="Models\Quotes2Context.cs" />
+    <Compile Include="Models\SimpleQuotes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
