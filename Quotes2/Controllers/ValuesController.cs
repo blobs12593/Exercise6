@@ -19,17 +19,16 @@ namespace Quotes2.Controllers
             {
                 SimpleQuotes mySimple = new SimpleQuotes();
                 mySimple.Quote = myQuote.Quote;
-                mySimple.Quote = myQuote.Author;
-                mySimple.Quote = myQuote.Category.Name;
+                mySimple.Author = myQuote.Author;
+                mySimple.Category = myQuote.Category.Name;
                 allQuotes.Add(mySimple);
             }
-
             return allQuotes;
         }
 
         public SimpleQuotes GetQuoteOfDay()
         {
-            List<SimpleQuotes> allQuotes = new List<SimpleQuotes>();
+            /*List<SimpleQuotes> allQuotes = new List<SimpleQuotes>();
             foreach (Quotation myQuote in db.Quotations)
             {
                 SimpleQuotes mySimple = new SimpleQuotes();
@@ -43,6 +42,16 @@ namespace Quotes2.Controllers
                 Random r = new Random();
                 int randomQuoteIndex = r.Next(0, allQuotes.Count);
                 return allQuotes[randomQuoteIndex];
+            }*/
+            if (db.Quotations.ToList().Count != 0)
+            {
+                Random r = new Random();
+                int randomQuoteIndex = r.Next(0, db.Quotations.Count());
+                SimpleQuotes mySimple = new SimpleQuotes();
+                mySimple.Quote = db.Quotations.ToList()[randomQuoteIndex].Quote;
+                mySimple.Author = db.Quotations.ToList()[randomQuoteIndex].Author;
+                mySimple.Category = db.Quotations.ToList()[randomQuoteIndex].Category.Name;
+                return mySimple;
             }
             else
             {

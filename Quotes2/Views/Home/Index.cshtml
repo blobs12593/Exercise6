@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Quotes2.Models.SimpleQuotes>
+@using GridMvc.Html;
+@{
     ViewBag.Title = "Home";
 }
 
@@ -12,13 +14,32 @@
     {
         <h2>Quote of the day!</h2>
         @:Quote: 
-        @Html.Encode(Model.Quote)
+        @Html.Encode(ViewBag.Quote)
+        <br />
+        @:Author: 
+        @Html.Encode(ViewBag.Author)
         <br />
         @:Category: 
-        @Html.Encode(Model.Category)
+        @Html.Encode(ViewBag.Category)
+        @*:Quote: 
+        @Html.Encode(Model.Quote)
         <br />
         @:Author: 
         @Html.Encode(Model.Author)
+        <br />
+        @:Category: 
+        @Html.Encode(Model.Category)*@
+        
+        @Html.Grid(Model).Columns(columns =>
+        {
+        columns.Add(model => model.Quote).Titled("Quote").SetWidth(200);
+        columns.Add(model => model.Author).Titled("Author")
+            .SetWidth(5)
+            .Sortable(true);
+        columns.Add(model => model.Category).Titled("Category")
+            .SetWidth(5)
+            .Sortable(true);
+        }).WithPaging(20)
     }
 </div>
 <div class="row">

@@ -13,7 +13,11 @@ namespace Quotes2.Controllers
         public ActionResult Index()
         {
             ValuesController myController = new ValuesController();
-            return View(myController.GetQuoteOfDay());
+            SimpleQuotes QuoteOfDay = myController.GetQuoteOfDay();
+            ViewBag.Quote = QuoteOfDay.Quote;
+            ViewBag.Author = QuoteOfDay.Author;
+            ViewBag.Category = QuoteOfDay.Category;
+            return View(myController.Get());
         }
 
         public ActionResult About()
