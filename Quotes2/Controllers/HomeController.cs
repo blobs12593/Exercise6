@@ -1,22 +1,35 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Quotes2.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
+using System.Net.Http;
+using System;
 
 namespace Quotes2.Controllers
 {
     public class HomeController : Controller
     {
+        private static bool myrun = true;
+        private static string quote;
+        private static string author;
+        private static string category;
+
         private Quotes2Context db = new Quotes2Context();
 
         public ActionResult Index()
         {
             ValuesController myController = new ValuesController();
-            SimpleQuotes QuoteOfDay = myController.GetQuoteOfDay();
-            ViewBag.Quote = QuoteOfDay.Quote;
-            ViewBag.Author = QuoteOfDay.Author;
-            ViewBag.Category = QuoteOfDay.Category;
+            if (myrun)
+            {
+                SimpleQuotes QuoteOfDay = myController.GetQuoteOfDay();
+                quote = QuoteOfDay.Quote;
+                author = QuoteOfDay.Author;
+                category = QuoteOfDay.Category;
+                myrun = false;
+            }
+            ViewBag.Quote = quote;
+            ViewBag.Author = author;
+            ViewBag.Category = category;
             return View(myController.Get());
         }
 
@@ -68,6 +81,18 @@ namespace Quotes2.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult Import(string id)
+        {
+            if (id != null)
+            {
+                HttpClient client = new HttpClient();
+                string url = Request.Url.GetLeftPart(UriPartial.Authority);
+                HttpResponseMessage response = client.GetAsync("api/HomeController").Result;
+                var quote = response.Content.ReadAsAsync<SimpleQuotes>().Result;
+            }
+            return View();
+        }
         public ActionResult Nuke()
         {
             var myContext = new ApplicationDbContext();

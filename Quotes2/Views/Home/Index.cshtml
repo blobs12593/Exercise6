@@ -21,14 +21,6 @@
         <br />
         @:Category: 
         @Html.Encode(ViewBag.Category)
-        @*:Quote: 
-        @Html.Encode(Model.Quote)
-        <br />
-        @:Author: 
-        @Html.Encode(Model.Author)
-        <br />
-        @:Category: 
-        @Html.Encode(Model.Category)*@
         
         @Html.Grid(Model).Columns(columns =>
         {

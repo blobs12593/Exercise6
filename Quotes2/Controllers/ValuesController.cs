@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Quotes2.Models;
 
@@ -28,21 +26,6 @@ namespace Quotes2.Controllers
 
         public SimpleQuotes GetQuoteOfDay()
         {
-            /*List<SimpleQuotes> allQuotes = new List<SimpleQuotes>();
-            foreach (Quotation myQuote in db.Quotations)
-            {
-                SimpleQuotes mySimple = new SimpleQuotes();
-                mySimple.Quote = myQuote.Quote;
-                mySimple.Author = myQuote.Author;
-                mySimple.Category = myQuote.Category.Name;
-                allQuotes.Add(mySimple);
-            }
-            if (allQuotes.Count != 0)
-            {
-                Random r = new Random();
-                int randomQuoteIndex = r.Next(0, allQuotes.Count);
-                return allQuotes[randomQuoteIndex];
-            }*/
             if (db.Quotations.ToList().Count != 0)
             {
                 Random r = new Random();

@@ -27,6 +27,7 @@
                     <li>@Html.ActionLink("Quotes", "Index", "Quotes2")</li>
                     @if (User.IsInRole("Admin"))
                     {
+                        <li>@Html.ActionLink("Import", "Import", "Home")</li>
                         <li>@Html.ActionLink("God Mode","God_Mode","Home")</li>
                     }
                 </ul>
