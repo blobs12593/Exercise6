@@ -96,39 +96,45 @@ namespace Quotes2.Controllers
             ViewBag.Message = null;
             if (id != null)
             {
-                HttpClient client = new HttpClient();
-                string url = Request.Url.GetLeftPart(UriPartial.Authority);
-                HttpResponseMessage response = client.GetAsync(id).Result;
-                Quotation tempQuote = new Quotation();
-                Boolean catMatch;
-                foreach (SimpleQuotes pulledQuote in response.Content.ReadAsAsync<SimpleQuotes[]>().Result)
+                try
                 {
-                    catMatch = false;
-                    tempQuote.Quote = pulledQuote.Quote;
-                    tempQuote.Author = pulledQuote.Author;
-                    tempQuote.Date = DateTime.Now.Date;
-                    tempQuote.Category = new Category();
-                    tempQuote.Category.Name = pulledQuote.Category;
-                    foreach (Category cat in db.Categories)
+                    HttpClient client = new HttpClient();
+                    string url = Request.Url.GetLeftPart(UriPartial.Authority);
+                    HttpResponseMessage response = client.GetAsync(id).Result;
+                    Quotation tempQuote = new Quotation();
+                    Boolean catMatch;
+                    foreach (SimpleQuotes pulledQuote in response.Content.ReadAsAsync<SimpleQuotes[]>().Result)
                     {
-                        if (cat.Name.Equals(tempQuote.Category.Name))
+                        catMatch = false;
+                        tempQuote.Quote = pulledQuote.Quote;
+                        tempQuote.Author = pulledQuote.Author;
+                        tempQuote.Date = DateTime.Now.Date;
+                        tempQuote.Category = new Category();
+                        tempQuote.Category.Name = pulledQuote.Category;
+                        foreach (Category cat in db.Categories)
                         {
-                            tempQuote.Category = cat;
-                            catMatch = true;
-                            break;
+                            if (cat.Name.Equals(tempQuote.Category.Name))
+                            {
+                                tempQuote.Category = cat;
+                                catMatch = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!catMatch)
-                    {
-                        tempQuote.Category = db.Categories.Add(tempQuote.Category);
+                        if (!catMatch)
+                        {
+                            tempQuote.Category = db.Categories.Add(tempQuote.Category);
+                        }
+                        ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                        currentUser.UserQuotes.Add(db.Quotations.Add(tempQuote));
                         db.SaveChanges();
                     }
-                    ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
-                    currentUser.UserQuotes.Add(db.Quotations.Add(tempQuote));
-                    db.SaveChanges();
+                    var quoteList = response.Content.ReadAsAsync<SimpleQuotes>().Result;
+                    ViewBag.Message = "Import Successful!";
                 }
-                var quoteList = response.Content.ReadAsAsync<SimpleQuotes>().Result;
-                ViewBag.Message = "Import Successful!";
+                catch (Exception e)
+                {
+                    ViewBag.Message = "Import Failed!";
+                }
             }
             return View();
         }
