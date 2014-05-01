@@ -239,7 +239,12 @@ namespace Quotes2.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(quotation).State = EntityState.Modified;
+                Quotation oldQuote = db.Quotations.Find(quotation.QuotationID);
+                oldQuote.Author = quotation.Author;
+                oldQuote.CategoryID = quotation.CategoryID;
+                oldQuote.Quote = quotation.Quote;
+                oldQuote.Date = DateTime.Now.Date;
+                //db.Entry(quotation).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

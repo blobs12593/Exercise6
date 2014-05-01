@@ -1,6 +1,5 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "Import";
 }
 
 <!DOCTYPE html>
@@ -11,13 +10,14 @@
     <title>Import</title>
 </head>
 <body>
+    <h2>@ViewBag.Title</h2>
+    <h3>@ViewBag.Message</h3>
     <div>
-        Add / and the URL to the URL above to import quotes.
-        @*<form>
-            Input file from: <input type="text" name="id">
-        </form>
-        <input type="submit" value="id" class="btn btn-default" name="id" />
-        @Html.ActionLink("Import", "Import", new { id = "http://indra.stockton.edu/projects/quotematic/Quote" })*@
+        @using (Html.BeginForm())
+        {
+            @Html.TextBox("id")
+            <input type="submit" value="Import" class="btn btn-default" name="submission" />
+        }
     </div>
 </body>
 </html>
