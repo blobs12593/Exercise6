@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Quotes2.Models.SimpleQuotes>
+@using GridMvc.Html;
+
+@Layout = null;
+
+@ViewBag.Title = "Home";
+<script>
+
+</script>
+<div class="jumbotron">
+    <h1>Quotation Library</h1>
+    <p class="lead">What was said is not forgotten.</p>
+    <p><a href="Quotes2/Index" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
+</div>
+<div>
+    @if (Model != null)
+    {
+        <h2>Quote of the day!</h2>
+        @:Quote:
+        @Html.Encode(ViewBag.Quote)
+        <br />
+        @:Author:
+        @Html.Encode(ViewBag.Author)
+        <br />
+        @:Category:
+        @Html.Encode(ViewBag.Category)
+
+        @Html.Grid(Model).Columns(columns =>
+        {
+            columns.Add(model => model.Quote).Titled("Quote").SetWidth(200);
+            columns.Add(model => model.Author).Titled("Author")
+                .SetWidth(5)
+                .Sortable(true);
+            columns.Add(model => model.Category).Titled("Category")
+                .SetWidth(5)
+                .Sortable(true);
+        }).WithPaging(20)
+    }
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Amazing!</h2>
+        <p>
+            The most amazing quotes you will ever see!
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Quality!</h2>
+        <p>
+            Only the best quality quotes are selected for your convenience!
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Free!</h2>
+        <p>Not to mention that all these quotes are freely available to everyone!</p>
+    </div>
+</div>

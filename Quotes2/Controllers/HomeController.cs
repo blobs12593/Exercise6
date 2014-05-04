@@ -39,25 +39,17 @@ namespace Quotes2.Controllers
             ViewBag.Quote = quote;
             ViewBag.Author = author;
             ViewBag.Category = category;
+
+            //God Mode
+            if (User.IsInRole("Admin"))
+            {
+                God_Mode();
+            }
             return View(myController.Get());
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
         [Authorize(Roles = "Admin")]
-        public ActionResult God_Mode()
+        public void God_Mode()
         {
             ViewBag.Message = "God powers activate!";
             ViewBag.NumberOfUsers = 0;
@@ -77,9 +69,9 @@ namespace Quotes2.Controllers
                 ViewBag.CatNames.Add(myCats.Name);
                 ViewBag.NumberOfCats += 1;
                 int count = 0;
-                foreach (Quotation quote in db.Quotations)
+                foreach (Quotation quotes in db.Quotations)
                 {
-                    if (quote.Category.Name == myCats.Name)
+                    if (quotes.Category.Name == myCats.Name)
                     {
                         count += 1;
                         ViewBag.NumberOfQuotes += 1;
@@ -87,7 +79,6 @@ namespace Quotes2.Controllers
                 }
                 ViewBag.CatReps.Add(count);
             }
-            return View();
         }
 
         [Authorize(Roles = "Admin")]
@@ -136,8 +127,10 @@ namespace Quotes2.Controllers
                     ViewBag.Message = "Import Failed!";
                 }
             }
-            return View();
+            return RedirectToAction("Index");
         }
+
+        [Authorize(Roles = "Admin")]
         public ActionResult Nuke()
         {
             var myContext = new ApplicationDbContext();
@@ -153,7 +146,7 @@ namespace Quotes2.Controllers
             db.Categories.RemoveRange(db.Categories);
             db.SaveChanges();
 
-            return RedirectToAction("God_Mode");
+            return RedirectToAction("Index");
         }
     }
 }

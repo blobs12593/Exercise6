@@ -4,51 +4,261 @@
     ViewBag.Title = "Home";
 }
 
-<div class="jumbotron">
-    <h1>Quotation Library</h1>
-    <p class="lead">What was said is not forgotten.</p>
-    <p><a href="Quotes2/Index" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
+@*Being navbar*@
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="" id="grandHome" class="navbar-brand">Quote Master</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="" id="home">Home</a></li>
+                <li><a href="" id="about">About</a></li>
+                <li><a href="" id="contact">Contact</a></li>
+                <li>@Html.ActionLink("Quotes", "../Quotes2/Index")</li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a href="" id="import">Import</a></li>
+                    <li><a href="" id="godMode">God Mode</a></li>
+                }
+            </ul>
+            @*Login Part*@
+            @using Microsoft.AspNet.Identity
+            @if (Request.IsAuthenticated)
+            {
+                using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                        </li>
+                        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                    </ul>
+                }
+            }
+            else
+            {
+                <ul class="nav navbar-nav navbar-right">
+                    <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                </ul>
+            }
+        </div>
+    </div>
 </div>
-<div>
-    @if (Model != null)
-    {
-        <h2>Quote of the day!</h2>
-        @:Quote: 
-        @Html.Encode(ViewBag.Quote)
-        <br />
-        @:Author: 
-        @Html.Encode(ViewBag.Author)
-        <br />
-        @:Category: 
-        @Html.Encode(ViewBag.Category)
-        
-        @Html.Grid(Model).Columns(columns =>
+@*End navbar*@
+
+<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#aboutContent").hide();
+        $("#contactContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").hide();
+    });
+    $("#grandHome").click(function (event) {
+        event.preventDefault();
+        $("#aboutContent").hide();
+        $("#contactContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").hide();
+        $("#homeContent").show();
+    });
+    $("#home").click(function (event) {
+        event.preventDefault();
+        $("#aboutContent").hide();
+        $("#contactContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").hide();
+        $("#homeContent").show();
+    });
+    $("#about").click(function (event) {
+        event.preventDefault();
+        $("#homeContent").hide();
+        $("#contactContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").hide();
+        $("#aboutContent").show();
+    });
+    $("#contact").click(function (event) {
+        event.preventDefault();
+        $("#homeContent").hide();
+        $("#aboutContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").hide();
+        $("#contactContent").show();
+    });
+    $("#godMode").click(function (event) {
+        event.preventDefault();
+        $("#homeContent").hide();
+        $("#aboutContent").hide();
+        $("#contactContent").hide();
+        $("#importContent").hide();
+        $("#godModeContent").show();
+    });
+    $("#import").click(function (event) {
+        event.preventDefault();
+        $("#homeContent").hide();
+        $("#aboutContent").hide();
+        $("#contactContent").hide();
+        $("#godModeContent").hide();
+        $("#importContent").show();
+    });
+</script>
+
+<div id="homeContent">
+    <div class="jumbotron">
+        <h1>Quotation Library</h1>
+        <p class="lead">What was said is not forgotten.</p>
+        <p><a href="../Quotes2/Index" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
+    </div>
+    <div>
+        @if (Model != null)
         {
-        columns.Add(model => model.Quote).Titled("Quote").SetWidth(200);
-        columns.Add(model => model.Author).Titled("Author")
-            .SetWidth(5)
-            .Sortable(true);
-        columns.Add(model => model.Category).Titled("Category")
-            .SetWidth(5)
-            .Sortable(true);
-        }).WithPaging(20)
+            <h2>Quote of the day!</h2>
+            @:Quote:
+            @Html.Encode(ViewBag.Quote)
+            <br />
+            @:Author:
+            @Html.Encode(ViewBag.Author)
+            <br />
+            @:Category:
+            @Html.Encode(ViewBag.Category)
+
+            @Html.Grid(Model).Columns(columns =>
+       {
+           columns.Add(model => model.Quote).Titled("Quote").SetWidth(200);
+           columns.Add(model => model.Author).Titled("Author")
+               .SetWidth(5)
+               .Sortable(true);
+           columns.Add(model => model.Category).Titled("Category")
+               .SetWidth(5)
+               .Sortable(true);
+       }).WithPaging(20)
+        }
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Amazing!</h2>
+            <p>
+                The most amazing quotes you will ever see!
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>Quality!</h2>
+            <p>
+                Only the best quality quotes are selected for your convenience!
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>Free!</h2>
+            <p>Not to mention that all these quotes are freely available to everyone!</p>
+        </div>
+    </div>
+</div>
+
+<div id="aboutContent">
+    <h2>About</h2>
+    <h3>Exercise 8</h3>
+
+    <p>This web application stores quotes in a database.</p>
+</div>
+
+<div id="contactContent">
+    <h2>Contact</h2>
+    <h3>Daniel Novack</h3>
+
+    <address>
+        101 Vera King Farris Drive<br />
+        Galloway, NJ 08205-9441<br />
+        (609) 652-1776
+    </address>
+
+    <address>
+        <strong>Stockton:</strong> <a href="mailto:novackd@go.stockton.edu">novackd@go.stockton.edu</a><br />
+        <strong>Personal:</strong> <a href="mailto:blobs12593@hotmail.com">blobs12593@hotmail.com</a>
+    </address>
+</div>
+
+@if (User.IsInRole("Admin"))
+{
+<div id="importContent">
+    <h2>Import</h2>
+    <div>
+        @using (Html.BeginForm("Import", "Home"))
+        {
+            @Html.TextBox("id")
+            <input type="submit" value="Import" class="btn btn-default" name="submission" />
+        }
+    </div>
+</div>
+<div id="godModeContent">
+@{
+    ViewBag.count = 0;
+}
+<h2>God Powers</h2>
+<h3>Knowledge</h3>
+
+@*Fail Safe*@
+@if (ViewBag.NumberOfUsers == null)
+{
+    ViewBag.NumberOfUsers = 0;
+}
+@if (ViewBag.NumberOfQuotes == null)
+{
+    ViewBag.NumberOfQuotes = 0;
+}
+@if (ViewBag.NumberOfCats == null)
+{
+    ViewBag.NumberOfCats = 0;
+}
+
+<div>Number of Users: @ViewBag.NumberOfUsers</div>
+<div>Number of Quotes: @ViewBag.NumberOfQuotes</div>
+<div>Number of Categories: @ViewBag.NumberOfCats</div>
+<br />
+<div>Quotes Per Category:</div>
+
+@foreach (string catName in ViewBag.CatNames)
+{
+    @catName
+    @: :
+    int innerCount = 0;
+    foreach (int catNum in ViewBag.CatReps)
+    {
+        if (innerCount == ViewBag.count)
+        {
+            @catNum
+            break;
+        }
+        innerCount += 1;
     }
+    ViewBag.count += 1;
+    <br />
+}
+
+@using (Html.BeginForm("Nuke", "Home"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h3>Destruction!</h3>
+        <hr />
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="NUKE IT!" class="btn btn-default" />
+        </div>
+    </div>
+}
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Amazing!</h2>
-        <p>
-            The most amazing quotes you will ever see!
-        </p>
-    </div>
-    <div class="col-md-4">
-        <h2>Quality!</h2>
-        <p>
-            Only the best quality quotes are selected for your convenience!
-        </p>
-    </div>
-    <div class="col-md-4">
-        <h2>Free!</h2>
-        <p>Not to mention that all these quotes are freely available to everyone!</p>
-    </div>
-</div>
+}
