@@ -93,31 +93,43 @@ namespace Quotes2.Controllers
                     string url = Request.Url.GetLeftPart(UriPartial.Authority);
                     HttpResponseMessage response = client.GetAsync(id).Result;
                     Quotation tempQuote = new Quotation();
-                    Boolean catMatch;
+                    Boolean catMatch, quoteMatch;
                     foreach (SimpleQuotes pulledQuote in response.Content.ReadAsAsync<SimpleQuotes[]>().Result)
                     {
-                        catMatch = false;
-                        tempQuote.Quote = pulledQuote.Quote;
-                        tempQuote.Author = pulledQuote.Author;
-                        tempQuote.Date = DateTime.Now.Date;
-                        tempQuote.Category = new Category();
-                        tempQuote.Category.Name = pulledQuote.Category;
-                        foreach (Category cat in db.Categories)
+                        quoteMatch = false;
+                        foreach (Quotation quotationCheck in db.Quotations)
                         {
-                            if (cat.Name.Equals(tempQuote.Category.Name))
+                            if (pulledQuote.Quote.Equals(quotationCheck.Quote))
                             {
-                                tempQuote.Category = cat;
-                                catMatch = true;
+                                quoteMatch = true;
                                 break;
                             }
                         }
-                        if (!catMatch)
+                        if (!quoteMatch)
                         {
-                            tempQuote.Category = db.Categories.Add(tempQuote.Category);
+                            catMatch = false;
+                            tempQuote.Quote = pulledQuote.Quote;
+                            tempQuote.Author = pulledQuote.Author;
+                            tempQuote.Date = DateTime.Now.Date;
+                            tempQuote.Category = new Category();
+                            tempQuote.Category.Name = pulledQuote.Category;
+                            foreach (Category cat in db.Categories)
+                            {
+                                if (cat.Name.Equals(tempQuote.Category.Name))
+                                {
+                                    tempQuote.Category = cat;
+                                    catMatch = true;
+                                    break;
+                                }
+                            }
+                            if (!catMatch)
+                            {
+                                tempQuote.Category = db.Categories.Add(tempQuote.Category);
+                            }
+                            ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+                            currentUser.UserQuotes.Add(db.Quotations.Add(tempQuote));
+                            db.SaveChanges();
                         }
-                        ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
-                        currentUser.UserQuotes.Add(db.Quotations.Add(tempQuote));
-                        db.SaveChanges();
                     }
                     var quoteList = response.Content.ReadAsAsync<SimpleQuotes>().Result;
                     ViewBag.Message = "Import Successful!";
